@@ -18,15 +18,15 @@ function formatTime(isoString) {
   })
 }
 
-function weatherIcon(code) {
-  if (code === 0) return '☀️'
-  if (code <= 2) return '⛅'
-  if (code <= 45) return '🌫️'
-  if (code <= 67) return '🌧️'
-  if (code <= 77) return '🌨️'
-  if (code <= 82) return '🌦️'
-  if (code >= 95) return '⛈️'
-  return '🌤️'
+function weatherLabel(code) {
+  if (code === 0) return 'Clear'
+  if (code <= 2) return 'Partly Cloudy'
+  if (code <= 45) return 'Overcast'
+  if (code <= 67) return 'Rain'
+  if (code <= 77) return 'Snow'
+  if (code <= 82) return 'Showers'
+  if (code >= 95) return 'Thunderstorm'
+  return 'Cloudy'
 }
 
 // Uluwatu faces WSW — offshore winds blow FROM the SE/E (90–170°)
@@ -203,13 +203,13 @@ export default function SurfTracker() {
     <div className="surf-tracker">
       <div className="surf-header">
         <h1>Surf Tracker</h1>
-        <span className="location">📍 Uluwatu, Bali</span>
+        <span className="location">Uluwatu, Bali</span>
         {lastUpdated && (
           <span className="updated">Updated {lastUpdated.toLocaleTimeString()}</span>
         )}
       </div>
 
-      {error && <div className="error">⚠️ {error}</div>}
+      {error && <div className="error">{error}</div>}
       {!current && !error && <div className="loading">Loading surf data...</div>}
 
       {surfScore !== null && (
@@ -256,14 +256,13 @@ export default function SurfTracker() {
         <div className="metrics-grid">
           <div className="metric-card weather">
             <h2>Weather</h2>
-            <div className="metric-icon">{weatherIcon(current.weather_code)}</div>
             <div className="metric-value">{current.temperature_2m}°C</div>
+            <div className="metric-condition">{weatherLabel(current.weather_code)}</div>
             <div className="metric-detail">Precipitation: {current.precipitation} mm</div>
           </div>
 
           <div className="metric-card wind">
             <h2>Wind</h2>
-            <div className="metric-icon">🌬️</div>
             <div className="metric-value">{current.wind_speed_10m} km/h</div>
             <div className="metric-detail">
               {windDirection(current.wind_direction_10m)} ({current.wind_direction_10m}°)
@@ -273,7 +272,6 @@ export default function SurfTracker() {
           {currentWave && (
             <div className="metric-card waves">
               <h2>Waves</h2>
-              <div className="metric-icon">🌊</div>
               <div className="metric-value">{currentWave.wave_height?.toFixed(1)} m</div>
               <div className="wave-size-label">{waveSize(currentWave.wave_height)}</div>
               <div className="metric-detail">
@@ -301,7 +299,6 @@ export default function SurfTracker() {
           {uv && (
             <div className="metric-card uv">
               <h2>UV Index</h2>
-              <div className="metric-icon">🌞</div>
               <div className="metric-value" style={{ color: uv.color }}>{uvIndex}</div>
               <div className="uv-label" style={{ color: uv.color }}>{uv.label}</div>
               <div className="metric-detail">{uv.advice}</div>
